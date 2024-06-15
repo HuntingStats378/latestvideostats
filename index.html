@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <style>
+@import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Readex+Pro:wght@200;300;400;500;600;700&family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Yantramanav:wght@100;300;400;500;700;900&display=swap");
+
+    body {
+      background-color: black;
+      color: white;
+      font-family: "Roboto";
+    }
+
+    * {
+      text-size-adjust: none;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .video_content {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      text-align: center;
+      font-family: "Roboto";
+      font-weight: 700;
+      font-size: 100px;
+    }
+
+    #video_thumbnail {
+      width: 128px;
+      height: 72px;
+    }
+
+    #video_title {
+      font-family: "Ubuntu";
+      font-weight: 500;
+      font-size: 27.5px;
+      color: #FFDB00;
+      margin-bottom: -10px;
+      max-width: 750px;
+    }
+
+    #video_trending {
+      font-family: "Ubuntu";
+      font-weight: 400;
+      font-style: italic;
+      font-size: 14px;
+      color: #FFF17C;
+      margin-top: 7.5px;
+    }
+
+    #video_apiViews {
+      font-family: "Roboto";
+      font-weight: 700;
+      font-size: 20px;
+      color: #BABABA;
+      margin-top: 2px;
+    }
+
+    #video_views {
+      color: #ECECEC;
+    }
+
+    #video_likes {
+      color: #7CFF00;
+    }
+
+    #video_comments {
+      color: #00F4FF;
+    }
+
+    #video_sinceUpload {
+      font-size: 90px;
+      color: #FF4258;
+      margin-top: 20px;
+    }
+
+
+    .gains {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 5px;
+    }
+
+    .gain {
+      display: flex;
+      gap: 7.5px;
+      color: white;
+      font-size: 20px;
+    }
+
+    .gainName {
+      font-family: "Ubuntu";
+      font-weight: 400;
+    }
+
+    .gainCount {
+      font-family: "Roboto";
+      font-weight: 500;
+      color: white;
+      margin-top: 1px;
+    }
+
+    .vidViews, .vidLikes, .vidComments {
+      position: relative;
+    }
+
+    #comment_text {
+      font-family: "Roboto";
+      font-weight: 500;
+      font-size: 20px;
+      color: white;
+      margin-top: 20px;
+    }
+
+    .chart {
+      width: 650px;
+      height: 130px;
+      position: absolute;
+      top: 0px;
+      left: 50%;
+      transform: translate(-50%, 0);
+      z-index: -1;
+    }
+
+  </style>
+  <link rel="stylesheet" href="./odometer-theme-minimal.css" />
+  <script src="./odometer.js"></script>
+  <script src="https://code.highcharts.com/10.3.3/highcharts.js"></script>
+</head>
+<body>
+  <div class="video_content">
+    <img id="video_thumbnail" alt="Video Thumbnail" src="thumbnailIcon.jpg" />
+    <a id="video_title">Loading...</a>
+    <!--
+    <p id="video_trending">
+      Loading...
+    </p>
+    !-->
+    <p id="video_apiViews">
+      Loading...
+    </p>
+
+    <div class="vidViews">
+      <p id="video_views">
+        Loading...
+      </p>
+      <div class="gains">
+        <div class="gain">
+          <p class="gainName">
+            1 min:
+          </p>
+          <p class="gainCount" id="views_min">
+            +0
+          </p>
+        </div>
+        <div class="gain">
+          <p class="gainName">
+            1 hr:
+          </p>
+          <p class="gainCount" id="views_hr">
+            +0
+          </p>
+        </div>
+      </div>
+      <div class="chart" id="views_chart"></div>
+    </div>
+
+    <div class="vidLikes">
+      <p id="video_likes">
+        Loading...
+      </p>
+      <div class="gains">
+        <div class="gain">
+          <p class="gainName">
+            1 min:
+          </p>
+          <p class="gainCount" id="likes_min">
+            +0
+          </p>
+        </div>
+        <div class="gain">
+          <p class="gainName">
+            1 hr:
+          </p>
+          <p class="gainCount" id="likes_hr">
+            +0
+          </p>
+        </div>
+      </div>
+      <div class="chart" id="likes_chart"></div>
+    </div>
+
+    <div class="vidComments">
+      <p id="video_comments">
+        Loading...
+      </p>
+      <div class="gains">
+        <div class="gain">
+          <p class="gainName">
+            1 min:
+          </p>
+          <p class="gainCount" id="comments_min">
+            +0
+          </p>
+        </div>
+        <div class="gain">
+          <p class="gainName">
+            1 hr:
+          </p>
+          <p class="gainCount" id="comments_hr">
+            +0
+          </p>
+        </div>
+      </div>
+      <div class="chart" id="comments_chart"></div>
+    </div>
+
+    <p id="video_sinceUpload">
+      Loading...
+    </p>
+
+    <p id="comment_text"></p>
+  </div>
+</body>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  var id = urlParams.get("id") || "UCX6OQ3DkcsbYNE6H8uQQuVA";
+  const types = ["default", "all", "video", "short", "stream"];
+  var type = urlParams.get("type") || "default";
+  if (types.includes(type) == false) {
+    type = "default";
+  }
+  // TYPES
+  // default = not count live streams
+  // all = count whatever channel upload latest
+  // video = count only videos or long forms
+  // short = count only shorts or short form
+  // stream = count only streams
+
+  id = id.replace(/^.{2}/g, "UU");
+
+  var videoCounts = {
+    len: 0,
+    time: [],
+    views: [],
+    likes: [],
+    comments: []
+  };
+  var videoUploadTime = Date.now();
+
+
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  function checkZero(unit) {
+    return unit < 10 ? "0" + unit: unit;
+  }
+
+  function timeToDHMS(time) {
+    let days = Math.floor(time / (1000 * 60 * 60 * 24));
+    let hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    let minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
+    let seconds = Math.floor((time % (1000 * 60)) / 1000);
+
+    return checkZero(days) + ":" + checkZero(hours) + ":" + checkZero(minutes) + ":" + checkZero(seconds);
+  }
+
+  function calcGain(arr, len) {
+    if (len !== undefined) {
+      if (arr.length > len) {
+        return arr[arr.length-1] - arr[((arr.length-1) - len)];
+      } else {
+        return arr[arr.length-1] - arr[0];
+      }
+    } else {
+      return arr[arr.length-1] - arr[0];
+    }
+  }
+
+  function calPrefixOfCount(x, gain, lose, none) {
+    gain = gain || "lime";
+    lose = lose || "red";
+    none = none || "white";
+    let count = parseFloat(x);
+    if (count > 0) {
+      return ["+",
+        gain];
+    } else if (count == 0) {
+      return ["+",
+        none];
+    } else {
+      return ["",
+        lose];
+    }
+  }
+
+  var viewsChart = new Highcharts.chart({
+    chart: {
+      renderTo: "views_chart",
+      type: "area",
+      zoomType: "xy",
+      backgroundColor: "transparent",
+      plotBorderColor: "transparent",
+      animation: false,
+    },
+    plotOptions: {
+      series: {
+        threshold: null,
+        fillOpacity: 0.25
+      },
+      area: {
+        fillOpacity: 0.25
+      }
+    },
+    time: {
+      useUTC: false,
+      timezoneOffset: new Date().getTimezoneOffset()
+    },
+    title: {
+      text: "",
+    },
+    xAxis: {
+      type: 'datetime',
+      visible: false,
+      title: {
+        text: "",
+      }
+    },
+    yAxis: {
+      visible: false,
+      title: {
+        text: "",
+      }
+    },
+    credits: {
+      enabled: false,
+    },
+    series: [{
+      showInLegend: false,
+      name: "Views",
+      marker: {
+        enabled: false
+      },
+      color: "#CFCFCF",
+      lineColor: "#CFCFCF",
+      lineWidth: 4,
+      data: []
+    }],
+  });
+
+
+  var likesChart = new Highcharts.chart({
+    chart: {
+      renderTo: "likes_chart",
+      type: "area",
+      zoomType: "xy",
+      backgroundColor: "transparent",
+      plotBorderColor: "transparent",
+      animation: false,
+    },
+    plotOptions: {
+      series: {
+        threshold: null,
+        fillOpacity: 0.25
+      },
+      area: {
+        fillOpacity: 0.25
+      }
+    },
+    time: {
+      useUTC: false,
+      timezoneOffset: new Date().getTimezoneOffset()
+    },
+    title: {
+      text: "",
+    },
+    xAxis: {
+      type: 'datetime',
+      visible: false,
+      title: {
+        text: "",
+      }
+    },
+    yAxis: {
+      visible: false,
+      title: {
+        text: "",
+      }
+    },
+    credits: {
+      enabled: false,
+    },
+    series: [{
+      showInLegend: false,
+      name: "Likes",
+      marker: {
+        enabled: false
+      },
+      color: "#85C000",
+      lineColor: "#85C000",
+      lineWidth: 4,
+      data: []
+    }],
+  });
+
+
+  var commentsChart = new Highcharts.chart({
+    chart: {
+      renderTo: "comments_chart",
+      type: "area",
+      zoomType: "xy",
+      backgroundColor: "transparent",
+      plotBorderColor: "transparent",
+      animation: false,
+    },
+    plotOptions: {
+      series: {
+        threshold: null,
+        fillOpacity: 0.25
+      },
+      area: {
+        fillOpacity: 0.25
+      }
+    },
+    time: {
+      useUTC: false,
+      timezoneOffset: new Date().getTimezoneOffset()
+    },
+    title: {
+      text: "",
+    },
+    xAxis: {
+      type: 'datetime',
+      visible: false,
+      title: {
+        text: "",
+      }
+    },
+    yAxis: {
+      visible: false,
+      title: {
+        text: "",
+      }
+    },
+    credits: {
+      enabled: false,
+    },
+    series: [{
+      showInLegend: false,
+      name: "Comments",
+      marker: {
+        enabled: false
+      },
+      color: "#00B4B6",
+      lineColor: "#00B4B6",
+      lineWidth: 4,
+      data: []
+    }],
+  });
+
+  function ISO8601Duration(ISO) {
+    const units = {
+      "Y": 31536000,
+      "M": 2592000,
+      "D": 86400,
+      "H": 3600,
+      "M": 60,
+      "S": 1
+    }
+
+    const unitsKeys = Object.keys(units);
+    let newISO = ISO.replace("P", "").replace("T", "");
+    let foundedKeys = [];
+    let durationISO = [];
+
+    for (let i = 0; i < newISO.length; i++) {
+      if (unitsKeys.includes(newISO[i]) == true) {
+        foundedKeys.push(newISO[i]);
+        newISO = newISO.replace(newISO[i], " ");
+      }
+    }
+
+    newISO = newISO.split(" ");
+    newISO.pop();
+
+    for (let i = 0; i < foundedKeys.length; i++) {
+      durationISO[i] = Number(newISO[i]) * units[foundedKeys[i]];
+    }
+
+    let duration = durationISO.reduce((a, b) => a + b, 0);
+
+    return duration;
+  }
+
+
+
+  function ConvertToCSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray): objArray;
+    var str = '';
+
+    for (var i = 0; i < array.length; i++) {
+      var line = '';
+      for (var index in array[i]) {
+        if (line != '') line += ','
+
+        line += array[i][index];
+      }
+
+      str += line + '\r\n';
+    }
+
+    return str;
+  }
+
+  
+  function render() {
+    fetch(`https://yt.lemnoslife.com/noKey/playlistItems?part=snippet&fields=items/snippet/resourceId/videoId&order=date&maxResults=50&playlistId=${id}`)
+    .then((res) => res.json())
+    .then((videos) => {
+      let vidIds = videos.items.map((video) => {
+        return video.snippet.resourceId.videoId;
+      });
+
+      if (vidIds !== null) {
+        fetch(`https://yt.lemnoslife.com/noKey/videos?part=snippet,liveStreamingDetails,contentDetails&fields=items(id,snippet/publishedAt,liveStreamingDetails,contentDetails/duration)&id=${vidIds.join(",")}`)
+        .then((res) => res.json())
+        .then((filteredVideos) => {
+
+          let filteredVids = filteredVideos.items;
+
+          if (type !== "all") {
+
+            filteredVids = filteredVideos.items.filter(filteredVideo => filteredVideo.liveStreamingDetails == null || filteredVideo.snippet.publishedAt === filteredVideo.liveStreamingDetails.actualStartTime);
+
+            if (type === "video") {
+              filteredVids = filteredVids.filter(filteredVid => ISO8601Duration(filteredVid.contentDetails.duration) > 60);
+            }
+
+            if (type === "short") {
+              filteredVids = filteredVids.filter(filteredVid => ISO8601Duration(filteredVid.contentDetails.duration) <= 60);
+            }
+
+            if (type === "stream") {
+              filteredVids = filteredVideos.items.filter(filteredVideo => filteredVideo.liveStreamingDetails !== null || filteredVideo.snippet.publishedAt !== filteredVideo.liveStreamingDetails.actualStartTime);
+            }
+
+          }
+
+          let latestVidID = filteredVids[0].id;
+
+          if (latestVidID !== null) {
+            Promise.all([
+              fetch(`https://nia-statistics.com/api/get?platform=youtube&type=video&id=${latestVidID}`),
+            ])
+            .then(responses => Promise.all(responses.map(res => res.json())))
+            .then(data => {
+              let video = data[0];
+             /* let VTD = data[1];
+              let comment = data[2].items[1].snippet.topLevelComment.snippet;*/
+
+
+              //document.getElementById('comment_text').innerHTML = comment.textDisplay + "<br> by " + comment.authorDisplayName + "<br> at " + new Date(comment.updatedAt).toString();
+
+              document.getElementById('video_thumbnail').src = video.snippet.thumbnails.maxres.url;
+              document.getElementById('video_title').textContent = video.snippet.title;
+            //  document.getElementById('video_trending').textContent = `Trending in ${VTD.totalCounts} out of ${VTD.maxScore} countries`
+              document.getElementById('video_title').href = "https://youtu.be/" + latestVidID;
+
+              if (document.getElementById('video_views').textContent === "Loading...") {
+                new Odometer({
+                  el: document.getElementById('video_apiViews'),
+                  value: video.apiViewCount
+                });
+
+                new Odometer({
+                  el: document.getElementById('video_views'),
+                  value: video.estViewCount
+                });
+
+                new Odometer({
+                  el: document.getElementById('video_likes'),
+                  value: video.apiLikeCount
+                });
+
+                new Odometer({
+                  el: document.getElementById('video_comments'),
+                  value: video.apiCommentCount
+                });
+              }
+
+
+
+              document.getElementById('video_apiViews').innerHTML = video.apiViewCount
+              document.getElementById('video_views').innerHTML = video.estViewCount
+              document.getElementById('video_likes').innerHTML = video.apiLikeCount
+              document.getElementById('video_comments').innerHTML = video.apiCommentCount
+
+
+
+              videoCounts.len += 1;
+
+              if (videoCounts.len >= 1800) {
+                videoCounts.len = 1800;
+                videoCounts.time.shift();
+                videoCounts.views.shift();
+                videoCounts.likes.shift();
+                videoCounts.comments.shift();
+              }
+
+              videoCounts.time.push(Date.now());
+              videoCounts.views.push(video.estViewCount);
+              videoCounts.likes.push(video.apiLikeCount);
+              videoCounts.comments.push(video.apiCommentCount);
+
+              let vm = calcGain(videoCounts.views, 30);
+              let vh = calcGain(videoCounts.views);
+
+              let lm = calcGain(videoCounts.likes, 30);
+              let lh = calcGain(videoCounts.likes);
+
+              let cm = calcGain(videoCounts.comments, 30);
+              let ch = calcGain(videoCounts.comments);
+
+              document.getElementById('views_min').textContent = calPrefixOfCount(vm)[0] + numberWithCommas(vm);
+              document.getElementById('views_min').style.color = calPrefixOfCount(vm)[1];
+              document.getElementById('views_hr').textContent = calPrefixOfCount(vh)[0] + numberWithCommas(vh);
+              document.getElementById('views_hr').style.color = calPrefixOfCount(vh)[1];
+
+              document.getElementById('likes_min').textContent = calPrefixOfCount(lm)[0] + numberWithCommas(lm);
+              document.getElementById('likes_min').style.color = calPrefixOfCount(lm)[1];
+              document.getElementById('likes_hr').textContent = calPrefixOfCount(lh)[0] + numberWithCommas(lh);
+              document.getElementById('likes_hr').style.color = calPrefixOfCount(lh)[1];
+
+              document.getElementById('comments_min').textContent = calPrefixOfCount(cm)[0] + numberWithCommas(cm);
+              document.getElementById('comments_min').style.color = calPrefixOfCount(cm)[1];
+              document.getElementById('comments_hr').textContent = calPrefixOfCount(ch)[0] + numberWithCommas(ch);
+              document.getElementById('comments_hr').style.color = calPrefixOfCount(ch)[1];
+
+              videoUploadTime = new Date(video.snippet.publishedAt).getTime();
+
+              let viewsChartData = [];
+              let likesChartData = [];
+              let commentsChartData = [];
+
+              for (let i = 0; i < videoCounts.views.length; i++) {
+                viewsChartData[i] = [videoCounts.time[i],
+                  videoCounts.views[i]];
+                likesChartData[i] = [videoCounts.time[i],
+                  videoCounts.likes[i]];
+                commentsChartData[i] = [videoCounts.time[i],
+                  videoCounts.comments[i]];
+              }
+
+
+              viewsChart.series[0].setData(viewsChartData, true);
+              likesChart.series[0].setData(likesChartData, true);
+              commentsChart.series[0].setData(commentsChartData, true);
+            });
+          }
+        });
+      }
+    });
+  }
+
+  setTimeout(render, 500);
+  setInterval(render, 4000);
+
+  setInterval(() => {
+    if (document.getElementById('video_views').textContent !== "Loading...") {
+      document.getElementById('video_sinceUpload').textContent = timeToDHMS(Date.now() - videoUploadTime);
+    }
+  }, 100);
+</script>
+</html>
