@@ -2,6 +2,24 @@
 <html>
 <head>
   <meta charset="UTF-8" />
+  <title>Latest Video Statistics - Real Time</title>
+  <!--
+  <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+  <link rel="manifest" href="./favicon/site.webmanifest">
+  --->
+  <meta property="og:title" content="Latest Video Statistics - Real Time" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://gnzzy7.github.io/latestvideostats/" />
+  <meta property="og:locale" content="en" />
+  <meta property="og:description" content="View any YouTube channel's latest video, short, stream, upload statistics in real time." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="./embed.png" />
+  <meta name="twitter:title" content="View any YouTube channel's latest video, short, stream, upload statistics in real time." content="View any YouTube channel's latest video, short, stream, upload statistics in real time." />
+  <meta name="description" content="View any YouTube channel's latest video, short, stream, upload statistics in real time." />
+  <meta property="og:image" content="./embed.png" />
+  <meta name="theme-color" content="#05ffac" />
   <link rel="stylesheet" href="odometer-theme-minimal.css" />
   <script src="odometer.js"></script>
   <script src="https://code.highcharts.com/10.3.3/highcharts.js"></script>
@@ -136,6 +154,14 @@
       z-index: -1;
     }
 
+        .tips_text {
+      font-family: "Barlow";
+      font-weight: 600;
+      font-size: 35px;
+      color: lime;
+      margin-top: 200px;
+        }
+
   </style>
 </head>
 <body>
@@ -232,6 +258,21 @@
 
     <p id="comment_text"></p>
   </div>
+
+      <div class="tips_text">
+    <span>TIPS: <br> change channel's latest by adding `?id=CHANNEL_ID` after the url</span><br><span><br>
+    <br>There are types
+    <br>
+     default = not count live streams
+  <br>
+     all = count whatever channel upload latest
+  <br>
+     video = count only videos or long forms
+  <br>
+     short = count only shorts or short form
+  <br>
+     stream = count only streams</span><br><span><br>You can change by adding `?type=TYPE` if you didn't select any channel, but if you already added the channel id to url, add this `&type=TYPE` after.</span><br><span>Default type is currently `default`</span>
+      </div>
 </body>
 <script>
   const urlParams = new URLSearchParams(window.location.search);
