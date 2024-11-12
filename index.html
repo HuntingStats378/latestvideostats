@@ -277,6 +277,7 @@
 <script>
   const urlParams = new URLSearchParams(window.location.search);
   var id = urlParams.get("id") || "UCX6OQ3DkcsbYNE6H8uQQuVA";
+  var key = urlParams.get("key") || "AIzaSyCGPYa3DGYGJNHWRMFSeLjBjyD2_gv_AZY";
   const types = ["default", "all", "video", "short", "stream"];
   var type = urlParams.get("type") || "default";
   if (types.includes(type) == false) {
@@ -567,7 +568,7 @@
 
   
   function render() {
-    fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&fields=items/snippet/resourceId/videoId&order=date&maxResults=50&playlistId=${id}&key=AIzaSyCGPYa3DGYGJNHWRMFSeLjBjyD2_gv_AZY`)
+    fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&fields=items/snippet/resourceId/videoId&order=date&maxResults=50&playlistId=${id}&key=${key}`)
     .then((res) => res.json())
     .then((videos) => {
       let vidIds = videos.items.map((video) => {
@@ -575,7 +576,7 @@
       });
 
       if (vidIds !== null) {
-        fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails,contentDetails&fields=items(id,snippet/publishedAt,liveStreamingDetails,contentDetails/duration)&id=${vidIds.join(",")}&key=AIzaSyCGPYa3DGYGJNHWRMFSeLjBjyD2_gv_AZY`)
+        fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails,contentDetails&fields=items(id,snippet/publishedAt,liveStreamingDetails,contentDetails/duration)&id=${vidIds.join(",")}&key=${key}`)
         .then((res) => res.json())
         .then((filteredVideos) => {
 
