@@ -567,7 +567,7 @@
 
   
   function render() {
-    fetch(`https://yt.lemnoslife.com/noKey/playlistItems?part=snippet&fields=items/snippet/resourceId/videoId&order=date&maxResults=50&playlistId=${id}`)
+    fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&fields=items/snippet/resourceId/videoId&order=date&maxResults=50&playlistId=${id}&key=AIzaSyCGPYa3DGYGJNHWRMFSeLjBjyD2_gv_AZY`)
     .then((res) => res.json())
     .then((videos) => {
       let vidIds = videos.items.map((video) => {
@@ -575,7 +575,7 @@
       });
 
       if (vidIds !== null) {
-        fetch(`https://yt.lemnoslife.com/noKey/videos?part=snippet,liveStreamingDetails,contentDetails&fields=items(id,snippet/publishedAt,liveStreamingDetails,contentDetails/duration)&id=${vidIds.join(",")}`)
+        fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails,contentDetails&fields=items(id,snippet/publishedAt,liveStreamingDetails,contentDetails/duration)&id=${vidIds.join(",")}&key=AIzaSyCGPYa3DGYGJNHWRMFSeLjBjyD2_gv_AZY`)
         .then((res) => res.json())
         .then((filteredVideos) => {
 
@@ -603,7 +603,7 @@
 
           if (latestVidID !== null) {
             Promise.all([
-              fetch(`https://nia-statistics.com/api/get?platform=youtube&type=video&id=${latestVidID}`),
+              fetch(`https://axern.space/api/get?platform=youtube&type=video&id=${latestVidID}`),
             ])
             .then(responses => Promise.all(responses.map(res => res.json())))
             .then(data => {
