@@ -23,11 +23,12 @@
   <link rel="stylesheet" href="odometer-theme-minimal.css" />
   <script src="odometer.js"></script>
   <script src="https://code.highcharts.com/10.3.3/highcharts.js"></script>
+  <script src="https://huntingstats378.github.io/main/assets/js/fetchrequests.js"></script>
   <style>
 @import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Readex+Pro:wght@200;300;400;500;600;700&family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Yantramanav:wght@100;300;400;500;700;900&display=swap");
 
     body {
-      background-color: transparent;
+      background-color: black;
       color: white;
       font-family: "Roboto";
     }
@@ -56,8 +57,8 @@
     }
 
     #video_thumbnail {
-      width: 256px;
-      height: 144px;
+      width: 128px;
+      height: 72px;
     }
 
     #video_title {
@@ -93,6 +94,10 @@
 
     #video_likes {
       color: #7CFF00;
+    }
+
+    #video_dislikes {
+      color: #FF4258;
     }
 
     #video_comments {
@@ -132,7 +137,7 @@
       margin-top: 1px;
     }
 
-    .vidViews, .vidLikes, .vidComments {
+    .vidViews, .vidLikes, .vidDisikes, .vidComments {
       position: relative;
     }
 
@@ -227,6 +232,31 @@
       <div class="chart" id="likes_chart"></div>
     </div>
 
+    <div class="vidDislikes">
+      <p id="video_dislikes" class="odometer">
+        Loading...
+      </p>
+      <div class="gains">
+        <div class="gain">
+          <p class="gainName">
+            1 min:
+          </p>
+          <p class="gainCount" id="dislikes_min">
+            +0
+          </p>
+        </div>
+        <div class="gain">
+          <p class="gainName">
+            1 hr:
+          </p>
+          <p class="gainCount" id="dislikes_hr">
+            +0
+          </p>
+        </div>
+      </div>
+      <div class="chart" id="dislikes_chart"></div>
+    </div>
+
     <div class="vidComments">
       <p id="video_comments" class="odometer">
         Loading...
@@ -277,7 +307,6 @@
 <script>
   const urlParams = new URLSearchParams(window.location.search);
   var id = urlParams.get("id") || "UCX6OQ3DkcsbYNE6H8uQQuVA";
-  var key = urlParams.get("key") || "AIzaSyCGPYa3DGYGJNHWRMFSeLjBjyD2_gv_AZY";
   const types = ["default", "all", "video", "short", "stream"];
   var type = urlParams.get("type") || "default";
   if (types.includes(type) == false) {
@@ -297,6 +326,7 @@
     time: [],
     views: [],
     likes: [],
+    dislikes: [],
     comments: []
   };
   var videoUploadTime = Date.now();
@@ -457,6 +487,59 @@
     }],
   });
 
+  var dislikesChart = new Highcharts.chart({
+    chart: {
+      renderTo: "dislikes_chart",
+      type: "area",
+      zoomType: "xy",
+      backgroundColor: "transparent",
+      plotBorderColor: "transparent",
+      animation: false,
+    },
+    plotOptions: {
+      series: {
+        threshold: null,
+        fillOpacity: 0.25
+      },
+      area: {
+        fillOpacity: 0.25
+      }
+    },
+    time: {
+      useUTC: false,
+      timezoneOffset: new Date().getTimezoneOffset()
+    },
+    title: {
+      text: "",
+    },
+    xAxis: {
+      type: 'datetime',
+      visible: false,
+      title: {
+        text: "",
+      }
+    },
+    yAxis: {
+      visible: false,
+      title: {
+        text: "",
+      }
+    },
+    credits: {
+      enabled: false,
+    },
+    series: [{
+      showInLegend: false,
+      name: "Disikes",
+      marker: {
+        enabled: false
+      },
+      color: "#FF4258",
+      lineColor: "#FF4258",
+      lineWidth: 4,
+      data: []
+    }],
+  });
 
   var commentsChart = new Highcharts.chart({
     chart: {
@@ -568,7 +651,7 @@
 
   
   function render() {
-    fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&fields=items/snippet/resourceId/videoId&order=date&maxResults=50&playlistId=${id}&key=${key}`)
+    fetch(`https://yt.lemnoslife.com/noKey/playlistItems?part=snippet&fields=items/snippet/resourceId/videoId&order=date&maxResults=50&playlistId=${id}`)
     .then((res) => res.json())
     .then((videos) => {
       let vidIds = videos.items.map((video) => {
@@ -576,7 +659,7 @@
       });
 
       if (vidIds !== null) {
-        fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails,contentDetails&fields=items(id,snippet/publishedAt,liveStreamingDetails,contentDetails/duration)&id=${vidIds.join(",")}&key=${key}`)
+        fetch(`https://yt.lemnoslife.com/noKey/videos?part=snippet,liveStreamingDetails,contentDetails&fields=items(id,snippet/publishedAt,liveStreamingDetails,contentDetails/duration)&id=${vidIds.join(",")}`)
         .then((res) => res.json())
         .then((filteredVideos) => {
 
@@ -604,7 +687,7 @@
 
           if (latestVidID !== null) {
             Promise.all([
-              fetch(`https://axern.space/api/get?platform=youtube&type=video&id=${latestVidID}`),
+              fetch(`https://nia-statistics.com/api/get?platform=youtube&type=video&id=${latestVidID}`),
             ])
             .then(responses => Promise.all(responses.map(res => res.json())))
             .then(data => {
