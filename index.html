@@ -652,130 +652,121 @@
 
   
   function render() {
-              (async () => {
+  (async () => {
     const video = await fetchyoutubelatest(id);
+
+    // let VTD = data[1];
+    // let comment = data[2].items[1].snippet.topLevelComment.snippet;
+
+    // document.getElementById('comment_text').innerHTML = comment.textDisplay + "<br> by " + comment.authorDisplayName + "<br> at " + new Date(comment.updatedAt).toString();
+
+    document.getElementById('video_thumbnail').src = video.user[1];
+    document.getElementById('video_title').textContent = video.user[0];
+    document.getElementById('video_title').href = "https://youtu.be/" + video.user[3];
+
+    if (document.getElementById('video_views').textContent === "Loading...") {
+      new Odometer({
+        el: document.getElementById('video_apiViews'),
+        value: video.counts[2]
+      });
+
+      new Odometer({
+        el: document.getElementById('video_views'),
+        value: video.counts[0]
+      });
+
+      new Odometer({
+        el: document.getElementById('video_likes'),
+        value: video.counts[3]
+      });
+
+      new Odometer({
+        el: document.getElementById('video_dislikes'),
+        value: video.counts[4]
+      });
+
+      new Odometer({
+        el: document.getElementById('video_comments'),
+        value: video.counts[5]
+      });
+    }
+
+    document.getElementById('video_apiViews').innerHTML = video.counts[2];
+    document.getElementById('video_views').innerHTML = video.counts[0];
+    document.getElementById('video_likes').innerHTML = video.counts[3];
+    document.getElementById('video_dislikes').innerHTML = video.counts[4];
+    document.getElementById('video_comments').innerHTML = video.counts[5];
+
+    videoCounts.len += 1;
+
+    if (videoCounts.len >= 1800) {
+      videoCounts.len = 1800;
+      videoCounts.time.shift();
+      videoCounts.views.shift();
+      videoCounts.likes.shift();
+      videoCounts.dislikes.shift();
+      videoCounts.comments.shift();
+    }
+
+    videoCounts.time.push(Date.now());
+    videoCounts.views.push(video.counts[0]);
+    videoCounts.likes.push(video.counts[3]);
+    videoCounts.dislikes.push(video.counts[4]);
+    videoCounts.comments.push(video.counts[5]);
+
+    let vm = calcGain(videoCounts.views, 30);
+    let vh = calcGain(videoCounts.views);
+
+    let lm = calcGain(videoCounts.likes, 30);
+    let lh = calcGain(videoCounts.likes);
+
+    let dm = calcGain(videoCounts.dislikes, 30);
+    let dh = calcGain(videoCounts.dislikes);
+
+    let cm = calcGain(videoCounts.comments, 30);
+    let ch = calcGain(videoCounts.comments);
+
+    document.getElementById('views_min').textContent = calPrefixOfCount(vm)[0] + numberWithCommas(vm);
+    document.getElementById('views_min').style.color = calPrefixOfCount(vm)[1];
+    document.getElementById('views_hr').textContent = calPrefixOfCount(vh)[0] + numberWithCommas(vh);
+    document.getElementById('views_hr').style.color = calPrefixOfCount(vh)[1];
+
+    document.getElementById('likes_min').textContent = calPrefixOfCount(lm)[0] + numberWithCommas(lm);
+    document.getElementById('likes_min').style.color = calPrefixOfCount(lm)[1];
+    document.getElementById('likes_hr').textContent = calPrefixOfCount(lh)[0] + numberWithCommas(lh);
+    document.getElementById('likes_hr').style.color = calPrefixOfCount(lh)[1];
+
+    document.getElementById('dislikes_min').textContent = calPrefixOfCount(dm)[0] + numberWithCommas(dm);
+    document.getElementById('dislikes_min').style.color = calPrefixOfCount(dm)[1];
+    document.getElementById('dislikes_hr').textContent = calPrefixOfCount(dh)[0] + numberWithCommas(dh);
+    document.getElementById('dislikes_hr').style.color = calPrefixOfCount(dh)[1];
+
+    document.getElementById('comments_min').textContent = calPrefixOfCount(cm)[0] + numberWithCommas(cm);
+    document.getElementById('comments_min').style.color = calPrefixOfCount(cm)[1];
+    document.getElementById('comments_hr').textContent = calPrefixOfCount(ch)[0] + numberWithCommas(ch);
+    document.getElementById('comments_hr').style.color = calPrefixOfCount(ch)[1];
+
+    videoUploadTime = new Date(video.user[4]).getTime();
+
+    let viewsChartData = [];
+    let likesChartData = [];
+    let dislikesChartData = [];
+    let commentsChartData = [];
+
+    for (let i = 0; i < videoCounts.views.length; i++) {
+      viewsChartData[i] = [videoCounts.time[i], videoCounts.views[i]];
+      likesChartData[i] = [videoCounts.time[i], videoCounts.likes[i]];
+      dislikesChartData[i] = [videoCounts.time[i], videoCounts.dislikes[i]];
+      commentsChartData[i] = [videoCounts.time[i], videoCounts.comments[i]];
+    }
+
+    viewsChart.series[0].setData(viewsChartData, true);
+    likesChart.series[0].setData(likesChartData, true);
+    dislikesChart.series[0].setData(dislikesChartData, true);
+    commentsChart.series[0].setData(commentsChartData, true);
   })();
-             /* let VTD = data[1];
-              let comment = data[2].items[1].snippet.topLevelComment.snippet;*/
+}
 
-
-              //document.getElementById('comment_text').innerHTML = comment.textDisplay + "<br> by " + comment.authorDisplayName + "<br> at " + new Date(comment.updatedAt).toString();
-
-              document.getElementById('video_thumbnail').src = video.user[1];
-              document.getElementById('video_title').textContent = video.user[0];
-            //  document.getElementById('video_trending').textContent = `Trending in ${VTD.totalCounts} out of ${VTD.maxScore} countries`
-              document.getElementById('video_title').href = "https://youtu.be/" + video.user[3];
-
-              if (document.getElementById('video_views').textContent === "Loading...") {
-                new Odometer({
-                  el: document.getElementById('video_apiViews'),
-                  value: video.counts[2]
-                });
-
-                new Odometer({
-                  el: document.getElementById('video_views'),
-                  value: video.counts[0]
-                });
-
-                new Odometer({
-                  el: document.getElementById('video_likes'),
-                  value: video.counts[3]
-                });
-
-                new Odometer({
-                  el: document.getElementById('video_dislikes'),
-                  value: video.counts[4]
-                });
-
-                new Odometer({
-                  el: document.getElementById('video_comments'),
-                  value: video.counts[5]
-                });
-              }
-
-
-
-              document.getElementById('video_apiViews').innerHTML = video.counts[2]
-              document.getElementById('video_views').innerHTML = video.counts[0]
-              document.getElementById('video_likes').innerHTML = video.counts[3]
-              document.getElementById('video_dislikes').innerHTML = video.counts[4]
-              document.getElementById('video_comments').innerHTML = video.counts[5]
-
-
-
-              videoCounts.len += 1;
-
-              if (videoCounts.len >= 1800) {
-                videoCounts.len = 1800;
-                videoCounts.time.shift();
-                videoCounts.views.shift();
-                videoCounts.likes.shift();
-                videoCounts.dislikes.shift();
-                videoCounts.comments.shift();
-              }
-
-              videoCounts.time.push(Date.now());
-              videoCounts.views.push(video.counts[0]);
-              videoCounts.likes.push(video.counts[3]);
-              videoCounts.dislikes.push(video.counts[4]);
-              videoCounts.comments.push(video.counts[5]);
-
-              let vm = calcGain(videoCounts.views, 30);
-              let vh = calcGain(videoCounts.views);
-
-              let lm = calcGain(videoCounts.likes, 30);
-              let lh = calcGain(videoCounts.likes);
-              
-              let dm = calcGain(videoCounts.dislikes, 30);
-              let dh = calcGain(videoCounts.dislikes);
-
-              let cm = calcGain(videoCounts.comments, 30);
-              let ch = calcGain(videoCounts.comments);
-
-              document.getElementById('views_min').textContent = calPrefixOfCount(vm)[0] + numberWithCommas(vm);
-              document.getElementById('views_min').style.color = calPrefixOfCount(vm)[1];
-              document.getElementById('views_hr').textContent = calPrefixOfCount(vh)[0] + numberWithCommas(vh);
-              document.getElementById('views_hr').style.color = calPrefixOfCount(vh)[1];
-
-              document.getElementById('likes_min').textContent = calPrefixOfCount(lm)[0] + numberWithCommas(lm);
-              document.getElementById('likes_min').style.color = calPrefixOfCount(lm)[1];
-              document.getElementById('likes_hr').textContent = calPrefixOfCount(lh)[0] + numberWithCommas(lh);
-              document.getElementById('likes_hr').style.color = calPrefixOfCount(lh)[1];
-
-              document.getElementById('dislikes_min').textContent = calPrefixOfCount(dm)[0] + numberWithCommas(dm);
-              document.getElementById('dislikes_min').style.color = calPrefixOfCount(dm)[1];
-              document.getElementById('dislikes_hr').textContent = calPrefixOfCount(dh)[0] + numberWithCommas(dh);
-              document.getElementById('dislikes_hr').style.color = calPrefixOfCount(dh)[1];
-
-              document.getElementById('comments_min').textContent = calPrefixOfCount(cm)[0] + numberWithCommas(cm);
-              document.getElementById('comments_min').style.color = calPrefixOfCount(cm)[1];
-              document.getElementById('comments_hr').textContent = calPrefixOfCount(ch)[0] + numberWithCommas(ch);
-              document.getElementById('comments_hr').style.color = calPrefixOfCount(ch)[1];
-
-              videoUploadTime = new Date(video.user[4]).getTime();
-
-              let viewsChartData = [];
-              let likesChartData = [];
-              let dislikesChartData = [];
-              let commentsChartData = [];
-
-              for (let i = 0; i < videoCounts.views.length; i++) {
-                viewsChartData[i] = [videoCounts.time[i],
-                  videoCounts.views[i]];
-                likesChartData[i] = [videoCounts.time[i],
-                  videoCounts.likes[i]];
-                dislikesChartData[i] = [videoCounts.time[i],
-                  videoCounts.dislikes[i]];
-                commentsChartData[i] = [videoCounts.time[i],
-                  videoCounts.comments[i]];
-              }
-
-
-              viewsChart.series[0].setData(viewsChartData, true);
-              likesChart.series[0].setData(likesChartData, true);
-              dislikesChart.series[0].setData(dislikesChartData, true);
-              commentsChart.series[0].setData(commentsChartData, true);
-  }
 
   setTimeout(render, 500);
   setInterval(render, 4000);
