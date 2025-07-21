@@ -309,6 +309,7 @@
   var id = urlParams.get("id") || "UCX6OQ3DkcsbYNE6H8uQQuVA";
   const types = ["default", "all", "video", "short", "stream"];
   var type = urlParams.get("type") || "default";
+  var video = {};
   if (types.includes(type) == false) {
     type = "default";
   }
