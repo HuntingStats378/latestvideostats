@@ -630,7 +630,19 @@
     return duration;
   }
 
-
+  function latestType(type) {
+    if (type == "all") {
+      return "";
+    } else if (type == video) {
+      return ["long"];
+    } else if (type == short) {
+      return ["short"];
+    } else if (type == stream) {
+      return ["live"];
+    } else {
+      return ["long", "short"];
+    }
+  }
 
   function ConvertToCSV(objArray) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray): objArray;
