@@ -330,8 +330,8 @@
     dislikes: [],
     comments: []
   };
+  
   var videoUploadTime = Date.now();
-
 
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
@@ -432,7 +432,6 @@
       data: []
     }],
   });
-
 
   var likesChart = new Highcharts.chart({
     chart: {
@@ -633,13 +632,13 @@
   function latestType(type) {
     if (type == "all") {
       return "";
-    } else if (type == video) {
+    } else if (type == "video") {
       return ["long"];
-    } else if (type == short) {
+    } else if (type == "short") {
       return ["short"];
-    } else if (type == stream) {
+    } else if (type == "stream") {
       return ["live"];
-    } else {
+    } else if (type == "default") {
       return ["long", "short"];
     }
   }
@@ -665,12 +664,17 @@
   
   function render() {
   (async () => {
-    const video = await fetchyoutubelatest(id);
-
-    // let VTD = data[1];
-    // let comment = data[2].items[1].snippet.topLevelComment.snippet;
-
-    // document.getElementById('comment_text').innerHTML = comment.textDisplay + "<br> by " + comment.authorDisplayName + "<br> at " + new Date(comment.updatedAt).toString();
+    const latestTypes = latestType(type);
+    for (let i = 0; i < 40; i++) {
+      let str = "fetchyoutube" + latestTypes[i];
+      const videos[i] = await window[str](id);;
+      if (videos.length == 1) {
+        const video = video[0]
+      } else {
+        sortedVideos = [...videos].sort((a, b) => b.user[4] - a.user[4]);
+        const video = sortedVideos[0];
+      }
+    };
 
     document.getElementById('video_thumbnail').src = video.user[1];
     document.getElementById('video_title').textContent = video.user[0];
